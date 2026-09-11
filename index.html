@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Namaz Vakti</title>
+<style>
+body{
+ margin:0;
+ background:#031f1a;
+ color:#fff;
+ font-family:Arial,sans-serif;
+}
+header{
+ background:#063c32;
+ padding:20px;
+ text-align:center;
+ border-bottom:1px solid #c9a84b;
+}
+header h1{margin:0;color:#e5c55f}
+main{padding:18px;max-width:600px;margin:auto}
+.card{
+ background:#082d26;
+ border-radius:18px;
+ padding:20px;
+ margin-bottom:15px;
+ border:1px solid #ffffff18;
+}
+.hero{
+ text-align:center;
+ background:linear-gradient(145deg,#0b5b48,#06382f);
+}
+.next{font-size:14px}
+#nextPrayer{font-size:32px;color:#e5c55f}
+#countdown{font-size:28px;font-weight:bold}
+.prayer{
+ display:flex;
+ justify-content:space-between;
+ padding:14px;
+ border-bottom:1px solid #ffffff15;
+}
+.time{color:#e5c55f;font-weight:bold}
+.arabic{
+ text-align:center;
+ font-size:28px;
+ color:#e5c55f;
+ line-height:1.8;
+}
+blockquote{
+ text-align:center;
+ line-height:1.6;
+}
+button{
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:12px;
+ background:#c9aa4e;
+ color:#06231d;
+ font-weight:bold;
+ margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>☪ Namaz Vakti</h1>
+<p>İmanla, huzura...</p>
+</header>
+
+<main>
+
+<div class="card hero">
+<p id="date">Namaz Vakitleri</p>
+<div class="next">SONRAKİ NAMAZ</div>
+<div id="nextPrayer">Yükleniyor...</div>
+<div id="countdown">--:--:--</div>
+</div>
+
+<div class="card">
+<h2>🕌 Bugünün Namaz Vakitleri</h2>
+<div id="prayers">Vakitler yükleniyor...</div>
+</div>
+
+<div class="card">
+<h2>📖 Günün Ayeti</h2>
+<div class="arabic">
+إِنَّ اللَّهَ مَعَ الصَّابِرِينَ
+</div>
+<blockquote>
+“Şüphesiz Allah, sabredenlerle beraberdir.”
+</blockquote>
+<p style="text-align:center;color:#aaa">
+Bakara Suresi, 153. Ayet
+</p>
+</div>
+
+<div class="card">
+<h2>🤲 Günün Duası</h2>
+<div class="arabic">
+رَبِّ زِدْنِي عِلْمًا
+</div>
+<blockquote>
+“Rabbim! İlmimi artır.”
+</blockquote>
+<p style="text-align:center;color:#aaa">
+Tâ-Hâ Suresi, 114. Ayet
+</p>
+</div>
+
+<div class="card">
+<h2>📿 Tesbih</h2>
+<div style="text-align:center">
+<div id="counter" style="font-size:60px;color:#e5c55f">0</div>
+<button onclick="tesbih()">TESBİH ÇEK</button>
+<button onclick="reset()">SIFIRLA</button>
+</div>
+</div>
+
+</main>
+
+<script>
+
+let sayac=0;
+
+function tesbih(){
+ sayac++;
+ if(sayac>100)sayac=1;
+ document.getElementById("counter").innerText=sayac;
+}
+
+function reset(){
+ sayac=0;
+ document.getElementById("counter").innerText=sayac;
+}
+
+const prayers=[
+ ["İmsak","Fajr"],
+ ["Güneş","Sunrise"],
+ ["Öğle","Dhuhr"],
+ ["İkindi","Asr"],
+ ["Akşam","Maghrib"],
+ ["Yatsı","Isha"]
+];
+
+let times={};
+
+async function getPrayerTimes(){
+
+ try{
+
+ const now=new Date();
+
+ const timestamp=Math.floor(now.getTime()/1000);
+
+ const url=
+ `https://api.aladhan.com/v1/timings/${timestamp}`+
+ `?latitude=41.0082&longitude=28.9784&method=13`;
+
+ const response=await fetch(url);
+ const data=await response.json();
+
+ times=data.data.timings;
+
+ document.getElementById("date").innerText=
+ new Date().toLocaleDateString("tr-TR",{
+ weekday:"long",
+ day:"numeric",
+ month:"long",
+ year:"numeric"
+ });
+
+ let html="";
+
+ prayers.forEach(p=>{
+   html+=`
+   <div class="prayer">
+   <span>${p[0]}</span>
+   <span class="time">${times[p[1]]}</span>
+   </div>`;
+ });
+
+ document.getElementById("prayers").innerHTML=html;
+
+ updateNext();
+
+ }catch(error){
+
+ document.getElementById("prayers").innerHTML=
+ "Namaz vakitleri alınamadı. İnternet bağlantınızı kontrol edin.";
+
+ }
+
+}
+
+function updateNext(){
+
+ let now=new Date();
+ let next=null;
+ let diff=Infinity;
+
+ prayers.forEach(p=>{
+
+   let t=times[p[1]];
+
+   if(!t)return;
+
+   let parts=t.split(":");
+
+   let d=new Date();
+
+   d.setHours(
+     parseInt(parts[0]),
+     parseInt(parts[1]),
+     0
+   );
+
+   let x=d-now;
+
+   if(x>0 && x<diff){
+     diff=x;
+     next={name:p[0],time:d};
+   }
+
+ });
+
+ if(!next){
+
+   let t=times.Fajr.split(":");
+   let d=new Date();
+
+   d.setDate(d.getDate()+1);
+
+   d.setHours(
+    parseInt(t[0]),
+    parseInt(t[1]),
+    0
+   );
+
+   next={name:"İmsak",time:d};
+
+ }
+
+ document.getElementById("nextPrayer").innerText=
+ next.name;
+
+ let seconds=Math.floor(
+   (next.time-new Date())/1000
+ );
+
+ let h=Math.floor(seconds/3600);
+ let m=Math.floor((seconds%3600)/60);
+ let s=seconds%60;
+
+ document.getElementById("countdown").innerText=
+ String(h).padStart(2,"0")+":"+
+ String(m).padStart(2,"0")+":"+
+ String(s).padStart(2,"0");
+
+}
+
+getPrayerTimes();
+
+setInterval(updateNext,1000);
+
+</script>
+
+</body>
+</html>
