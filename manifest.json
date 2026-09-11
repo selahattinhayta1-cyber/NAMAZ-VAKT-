@@ -1,0 +1,11 @@
+{
+  "name": "Namaz Vakti",
+  "short_name": "Namaz Vakti",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#031f1a",
+  "theme_color": "#063c32",
+  "lang": "tr",
+  "description": "Namaz vakitleri, ayetler, kıble, dua ve tesbih uygulaması",
+  "icons": []
+}
