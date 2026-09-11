@@ -3,62 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#063c32">
 <title>Namaz Vakti</title>
+
 <style>
+*{box-sizing:border-box}
 body{
  margin:0;
  background:#031f1a;
- color:#fff;
+ color:white;
  font-family:Arial,sans-serif;
+ padding-bottom:75px
 }
 header{
  background:#063c32;
- padding:20px;
  text-align:center;
- border-bottom:1px solid #c9a84b;
+ padding:22px 10px;
+ border-bottom:2px solid #d8b94f
 }
-header h1{margin:0;color:#e5c55f}
-main{padding:18px;max-width:600px;margin:auto}
+header h1{
+ margin:0;
+ color:#e8c85c;
+ font-size:30px
+}
+header p{margin:8px 0 0;color:#ddd}
+
+main{max-width:700px;margin:auto;padding:15px}
+
 .card{
- background:#082d26;
- border-radius:18px;
+ background:#07382f;
+ border:1px solid #ffffff22;
+ border-radius:20px;
  padding:20px;
- margin-bottom:15px;
- border:1px solid #ffffff18;
+ margin:15px 0
 }
+
 .hero{
  text-align:center;
- background:linear-gradient(145deg,#0b5b48,#06382f);
+ background:linear-gradient(145deg,#0a5b48,#06352d);
+ border:1px solid #d8b94f88;
+ border-radius:24px;
+ padding:25px 15px
 }
-.next{font-size:14px}
-#nextPrayer{font-size:32px;color:#e5c55f}
-#countdown{font-size:28px;font-weight:bold}
+
+.date{font-size:17px}
+.label{margin-top:18px;font-size:13px}
+.next{
+ color:#e8c85c;
+ font-size:34px;
+ margin:5px
+}
+.count{
+ font-size:30px;
+ font-weight:bold
+}
+
+h2{
+ font-family:Georgia,serif;
+ color:#fff
+}
+
 .prayer{
  display:flex;
  justify-content:space-between;
- padding:14px;
- border-bottom:1px solid #ffffff15;
+ padding:15px 5px;
+ border-bottom:1px solid #ffffff16;
+ font-size:17px
 }
-.time{color:#e5c55f;font-weight:bold}
+
+.prayer b{color:#e8c85c}
+
+.prayer.active{
+ background:#0b4b3e;
+ border-radius:10px;
+ padding-left:12px;
+ padding-right:12px
+}
+
 .arabic{
  text-align:center;
- font-size:28px;
- color:#e5c55f;
- line-height:1.8;
+ font:28px/1.8 Georgia,serif;
+ color:#e8c85c
 }
-blockquote{
+
+.translation{
  text-align:center;
- line-height:1.6;
+ font-size:17px;
+ line-height:1.6
 }
+
+.ref{
+ text-align:center;
+ color:#aebdb7;
+ font-size:13px
+}
+
 button{
+ font:inherit
+}
+
+.btn{
  width:100%;
  padding:14px;
+ margin-top:12px;
  border:0;
  border-radius:12px;
- background:#c9aa4e;
- color:#06231d;
- font-weight:bold;
- margin-top:10px;
+ background:#d8b94f;
+ color:#062c24;
+ font-weight:bold
+}
+
+.secondary{
+ background:transparent;
+ border:1px solid #d8b94f;
+ color:#e8c85c
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px
+}
+
+.mini{
+ text-align:center;
+ font-size:18px
+}
+
+.big-number{
+ text-align:center;
+ font-size:70px;
+ color:#e8c85c;
+ font-weight:bold
+}
+
+.tasbih{text-align:center}
+
+.tasbih-button{
+ width:190px;
+ height:190px;
+ border-radius:50%;
+ border:3px solid #efd879;
+ background:#d8b94f;
+ color:#062c24;
+ font-weight:bold
+}
+
+.compass{
+ width:250px;
+ height:250px;
+ margin:20px auto;
+ border:3px solid #d8b94f;
+ border-radius:50%;
+ background:#0a4439;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ position:relative
+}
+
+.compass .n{position:absolute;top:12px}
+.compass .e{position:absolute;right:15px}
+.compass .s{position:absolute;bottom:12px}
+.compass .w{position:absolute;left:15px}
+
+.arrow{
+ font-size:55px;
+ color:#e8c85c;
+ transition:.3s
+}
+
+.info{
+ text-align:center;
+ color:#b9c5c0;
+ font-size:13px
+}
+
+.page{display:none}
+.page.active{display:block}
+
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ background:#021b17;
+ border-top:1px solid #d8b94f55;
+ display:flex;
+ justify-content:center;
+ z-index:10
+}
+
+nav button{
+ flex:1;
+ max-width:120px;
+ background:none;
+ border:0;
+ color:#9ca9a4;
+ padding:9px 2px;
+ font-size:18px
+}
+
+nav small{
+ display:block;
+ font-size:10px
+}
+
+nav button.active{
+ color:#e8c85c
 }
 </style>
 </head>
@@ -72,198 +224,598 @@ button{
 
 <main>
 
-<div class="card hero">
-<p id="date">Namaz Vakitleri</p>
-<div class="next">SONRAKİ NAMAZ</div>
-<div id="nextPrayer">Yükleniyor...</div>
-<div id="countdown">--:--:--</div>
+<!-- ANA SAYFA -->
+<section id="home" class="page active">
+
+<div class="card">
+<div style="text-align:center">
+📍 <span id="location">Konum alınıyor...</span>
+</div>
+</div>
+
+<div class="hero">
+<div class="date" id="date"></div>
+<div class="label">SONRAKİ NAMAZ</div>
+<div class="next" id="nextPrayer">—</div>
+<div class="count" id="countdown">--:--:--</div>
 </div>
 
 <div class="card">
 <h2>🕌 Bugünün Namaz Vakitleri</h2>
 <div id="prayers">Vakitler yükleniyor...</div>
+<p class="info" id="status"></p>
 </div>
 
 <div class="card">
 <h2>📖 Günün Ayeti</h2>
-<div class="arabic">
-إِنَّ اللَّهَ مَعَ الصَّابِرِينَ
-</div>
-<blockquote>
-“Şüphesiz Allah, sabredenlerle beraberdir.”
-</blockquote>
-<p style="text-align:center;color:#aaa">
-Bakara Suresi, 153. Ayet
-</p>
+
+<div class="arabic" id="arabic"></div>
+
+<p class="translation" id="translation"></p>
+
+<div class="ref" id="reference"></div>
 </div>
 
+</section>
+
+
+<!-- AYET -->
+<section id="verse" class="page">
+
+<h2>📖 Günün Ayeti</h2>
+
 <div class="card">
+
+<div class="arabic" id="arabic2"></div>
+
+<p class="translation" id="translation2"></p>
+
+<div class="ref" id="reference2"></div>
+
+<button class="btn" onclick="newVerse()">
+🔄 Başka Ayet Göster
+</button>
+
+</div>
+
+</section>
+
+
+<!-- KIBLE -->
+<section id="qibla" class="page">
+
+<h2>🧭 Kıble Yönü</h2>
+
+<div class="card">
+
+<div class="compass">
+
+<span class="n">K</span>
+<span class="e">D</span>
+<span class="s">G</span>
+<span class="w">B</span>
+
+<div class="arrow" id="arrow">▲</div>
+
+</div>
+
+<h2 style="text-align:center;color:#e8c85c" id="qiblaDegree">
+—°
+</h2>
+
+<p class="info">
+Kâbe yönü hesaplanıyor...
+</p>
+
+<button class="btn" onclick="useCompass()">
+🧭 Telefon Pusulasını Kullan
+</button>
+
+</div>
+
+</section>
+
+
+<!-- DUA -->
+<section id="dua" class="page">
+
 <h2>🤲 Günün Duası</h2>
+
+<div class="card">
+
 <div class="arabic">
 رَبِّ زِدْنِي عِلْمًا
 </div>
-<blockquote>
+
+<p class="translation">
 “Rabbim! İlmimi artır.”
-</blockquote>
-<p style="text-align:center;color:#aaa">
-Tâ-Hâ Suresi, 114. Ayet
 </p>
+
+<div class="ref">
+Tâ-Hâ 20:114
+</div>
+
 </div>
 
 <div class="card">
+
+<p style="line-height:1.7">
+Allah'ım! Bize dünya ve ahiret iyiliği ver.
+Günahlarımızı bağışla, ailemizi ve bütün
+Müslümanları koru. Kalplerimize huzur ver.
+Âmin.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- TESBİH -->
+<section id="tasbih" class="page">
+
 <h2>📿 Tesbih</h2>
-<div style="text-align:center">
-<div id="counter" style="font-size:60px;color:#e5c55f">0</div>
-<button onclick="tesbih()">TESBİH ÇEK</button>
-<button onclick="reset()">SIFIRLA</button>
+
+<div class="card tasbih">
+
+<div class="big-number" id="counter">0</div>
+
+<button class="tasbih-button" onclick="tasbih()">
+TESBİH<br>ÇEK
+</button>
+
+<button class="btn secondary" onclick="resetTasbih()">
+Sıfırla
+</button>
+
 </div>
+
+</section>
+
+
+<!-- TAKVİM -->
+<section id="calendar" class="page">
+
+<h2>🌙 Hicri Takvim</h2>
+
+<div class="card" style="text-align:center">
+
+<div style="font-size:60px">🌙</div>
+
+<h2 id="hijri">
+Hicri tarih hesaplanıyor...
+</h2>
+
+<p class="info" id="gregorian"></p>
+
 </div>
+
+</section>
 
 </main>
 
+
+<!-- ALT MENÜ -->
+<nav>
+
+<button class="active" onclick="showPage('home',this)">
+🏠<small>Ana Sayfa</small>
+</button>
+
+<button onclick="showPage('verse',this)">
+📖<small>Ayet</small>
+</button>
+
+<button onclick="showPage('qibla',this)">
+🧭<small>Kıble</small>
+</button>
+
+<button onclick="showPage('dua',this)">
+🤲<small>Dua</small>
+</button>
+
+<button onclick="showPage('tasbih',this)">
+📿<small>Tesbih</small>
+</button>
+
+<button onclick="showPage('calendar',this)">
+🌙<small>Takvim</small>
+</button>
+
+</nav>
+
+
 <script>
 
-let sayac=0;
+const verses=[
 
-function tesbih(){
- sayac++;
- if(sayac>100)sayac=1;
- document.getElementById("counter").innerText=sayac;
-}
+[
+"إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+"Şüphesiz Allah, sabredenlerle beraberdir.",
+"Bakara 2:153"
+],
 
-function reset(){
- sayac=0;
- document.getElementById("counter").innerText=sayac;
-}
+[
+"فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",
+"Şüphesiz zorlukla beraber bir kolaylık vardır.",
+"İnşirah 94:5"
+],
 
-const prayers=[
- ["İmsak","Fajr"],
- ["Güneş","Sunrise"],
- ["Öğle","Dhuhr"],
- ["İkindi","Asr"],
- ["Akşam","Maghrib"],
- ["Yatsı","Isha"]
+[
+"وَقُلْ رَبِّ زِدْنِي عِلْمًا",
+"Rabbim! İlmimi artır, de.",
+"Tâ-Hâ 20:114"
+],
+
+[
+"وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
+"Kim Allah'a tevekkül ederse Allah ona yeter.",
+"Talâk 65:3"
+],
+
+[
+"إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ",
+"Bir toplum kendisindeki durumu değiştirmedikçe Allah onların durumunu değiştirmez.",
+"Ra'd 13:11"
+]
+
 ];
 
-let times={};
+let verseIndex=new Date().getDate()%verses.length;
 
-async function getPrayerTimes(){
+function showVerse(){
 
- try{
+let v=verses[verseIndex];
 
- const now=new Date();
+document.getElementById("arabic").innerText=v[0];
+document.getElementById("translation").innerText="“"+v[1]+"”";
+document.getElementById("reference").innerText="— "+v[2];
 
- const timestamp=Math.floor(now.getTime()/1000);
-
- const url=
- `https://api.aladhan.com/v1/timings/${timestamp}`+
- `?latitude=41.0082&longitude=28.9784&method=13`;
-
- const response=await fetch(url);
- const data=await response.json();
-
- times=data.data.timings;
-
- document.getElementById("date").innerText=
- new Date().toLocaleDateString("tr-TR",{
- weekday:"long",
- day:"numeric",
- month:"long",
- year:"numeric"
- });
-
- let html="";
-
- prayers.forEach(p=>{
-   html+=`
-   <div class="prayer">
-   <span>${p[0]}</span>
-   <span class="time">${times[p[1]]}</span>
-   </div>`;
- });
-
- document.getElementById("prayers").innerHTML=html;
-
- updateNext();
-
- }catch(error){
-
- document.getElementById("prayers").innerHTML=
- "Namaz vakitleri alınamadı. İnternet bağlantınızı kontrol edin.";
-
- }
+document.getElementById("arabic2").innerText=v[0];
+document.getElementById("translation2").innerText="“"+v[1]+"”";
+document.getElementById("reference2").innerText="— "+v[2];
 
 }
 
-function updateNext(){
+function newVerse(){
 
- let now=new Date();
- let next=null;
- let diff=Infinity;
+verseIndex++;
 
- prayers.forEach(p=>{
+if(verseIndex>=verses.length)
+verseIndex=0;
 
-   let t=times[p[1]];
-
-   if(!t)return;
-
-   let parts=t.split(":");
-
-   let d=new Date();
-
-   d.setHours(
-     parseInt(parts[0]),
-     parseInt(parts[1]),
-     0
-   );
-
-   let x=d-now;
-
-   if(x>0 && x<diff){
-     diff=x;
-     next={name:p[0],time:d};
-   }
-
- });
-
- if(!next){
-
-   let t=times.Fajr.split(":");
-   let d=new Date();
-
-   d.setDate(d.getDate()+1);
-
-   d.setHours(
-    parseInt(t[0]),
-    parseInt(t[1]),
-    0
-   );
-
-   next={name:"İmsak",time:d};
-
- }
-
- document.getElementById("nextPrayer").innerText=
- next.name;
-
- let seconds=Math.floor(
-   (next.time-new Date())/1000
- );
-
- let h=Math.floor(seconds/3600);
- let m=Math.floor((seconds%3600)/60);
- let s=seconds%60;
-
- document.getElementById("countdown").innerText=
- String(h).padStart(2,"0")+":"+
- String(m).padStart(2,"0")+":"+
- String(s).padStart(2,"0");
+showVerse();
 
 }
 
-getPrayerTimes();
+showVerse();
 
-setInterval(updateNext,1000);
+
+function showPage(page,button){
+
+document.querySelectorAll(".page").forEach(function(x){
+x.classList.remove("active");
+});
+
+document.getElementById(page).classList.add("active");
+
+document.querySelectorAll("nav button").forEach(function(x){
+x.classList.remove("active");
+});
+
+button.classList.add("active");
+
+}
+
+
+document.getElementById("date").innerText=
+new Date().toLocaleDateString("tr-TR",{
+weekday:"long",
+day:"numeric",
+month:"long",
+year:"numeric"
+});
+
+
+let prayerTimes={};
+
+function loadPrayerTimes(){
+
+if(!navigator.geolocation){
+
+getPrayerTimes(41.0082,28.9784);
+return;
+
+}
+
+navigator.geolocation.getCurrentPosition(
+
+function(position){
+
+let lat=position.coords.latitude;
+let lon=position.coords.longitude;
+
+getPrayerTimes(lat,lon);
+
+},
+
+function(){
+
+document.getElementById("location").innerText=
+"İstanbul";
+
+getPrayerTimes(41.0082,28.9784);
+
+}
+
+);
+
+}
+
+
+async function getPrayerTimes(lat,lon){
+
+try{
+
+let today=Math.floor(Date.now()/1000);
+
+let url=
+"https://api.aladhan.com/v1/timings/"
++today+
+"?latitude="+lat+
+"&longitude="+lon+
+"&method=13";
+
+let response=await fetch(url);
+
+let data=await response.json();
+
+prayerTimes=data.data.timings;
+
+document.getElementById("location").innerText=
+data.data.meta.timezone.replaceAll("_"," / ");
+
+document.getElementById("status").innerText=
+"Konumunuza göre hesaplandı.";
+
+displayPrayerTimes();
+
+}
+catch(error){
+
+prayerTimes={
+Fajr:"05:07",
+Sunrise:"06:34",
+Dhuhr:"13:05",
+Asr:"16:39",
+Maghrib:"19:26",
+Isha:"20:47"
+};
+
+document.getElementById("location").innerText="İstanbul";
+
+document.getElementById("status").innerText=
+"Örnek vakitler gösteriliyor.";
+
+displayPrayerTimes();
+
+}
+
+}
+
+
+function displayPrayerTimes(){
+
+let list=[
+["İmsak","Fajr"],
+["Güneş","Sunrise"],
+["Öğle","Dhuhr"],
+["İkindi","Asr"],
+["Akşam","Maghrib"],
+["Yatsı","Isha"]
+];
+
+let html="";
+
+list.forEach(function(item){
+
+let time=(prayerTimes[item[1]]||"").split(" ")[0];
+
+html+=
+'<div class="prayer">'+
+'<span>'+item[0]+'</span>'+
+'<b>'+time+'</b>'+
+'</div>';
+
+});
+
+document.getElementById("prayers").innerHTML=html;
+
+updateCountdown();
+
+}
+
+
+function updateCountdown(){
+
+let now=new Date();
+
+let list=[
+["İmsak","Fajr"],
+["Öğle","Dhuhr"],
+["İkindi","Asr"],
+["Akşam","Maghrib"],
+["Yatsı","Isha"]
+];
+
+let next=null;
+
+for(let item of list){
+
+let value=(prayerTimes[item[1]]||"").split(" ")[0];
+
+if(!value)continue;
+
+let parts=value.split(":");
+
+let target=new Date();
+
+target.setHours(
+Number(parts[0]),
+Number(parts[1]),
+0,
+0
+);
+
+if(target>now){
+
+next={
+name:item[0],
+time:target
+};
+
+break;
+
+}
+
+}
+
+if(next){
+
+let seconds=Math.floor(
+(next.time-now)/1000
+);
+
+let h=Math.floor(seconds/3600);
+
+let m=Math.floor((seconds%3600)/60);
+
+let s=seconds%60;
+
+document.getElementById("nextPrayer").innerText=
+next.name;
+
+document.getElementById("countdown").innerText=
+String(h).padStart(2,"0")+":"+
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0");
+
+}
+
+}
+
+
+setInterval(updateCountdown,1000);
+
+
+function tasbih(){
+
+let number=
+Number(localStorage.getItem("tasbih")||0)+1;
+
+localStorage.setItem("tasbih",number);
+
+document.getElementById("counter").innerText=number;
+
+}
+
+
+function resetTasbih(){
+
+localStorage.setItem("tasbih",0);
+
+document.getElementById("counter").innerText=0;
+
+}
+
+
+document.getElementById("counter").innerText=
+localStorage.getItem("tasbih")||0;
+
+
+function useCompass(){
+
+if(window.DeviceOrientationEvent){
+
+window.addEventListener(
+"deviceorientation",
+function(event){
+
+if(event.alpha!==null){
+
+document.getElementById("arrow").style.transform=
+"rotate("+event.alpha+"deg)";
+
+}
+
+});
+
+}
+
+}
+
+
+function calculateQibla(){
+
+let lat=41.0082;
+let lon=28.9784;
+
+let p=Math.PI/180;
+
+let a=lat*p;
+let b=lon*p;
+
+let ka=21.422487*p;
+let kb=39.826206*p;
+
+let angle=
+Math.atan2(
+Math.sin(kb-b),
+Math.cos(a)*Math.tan(ka)-
+Math.sin(a)*Math.cos(kb-b)
+)/p;
+
+angle=(angle+360)%360;
+
+document.getElementById("qiblaDegree").innerText=
+Math.round(angle)+"°";
+
+}
+
+calculateQibla();
+
+
+let today=new Date();
+
+document.getElementById("gregorian").innerText=
+today.toLocaleDateString("tr-TR");
+
+
+let hijriMonths=[
+"Muharrem",
+"Safer",
+"Rebiülevvel",
+"Rebiülahir",
+"Cemaziyelevvel",
+"Cemaziyelahir",
+"Recep",
+"Şaban",
+"Ramazan",
+"Şevval",
+"Zilkade",
+"Zilhicce"
+];
+
+let hijriDay=
+Math.floor(
+(today-new Date(today.getFullYear(),0,1))/86400000
+)+1;
+
+document.getElementById("hijri").innerText=
+"🌙 Hicri Takvim • Gün "+hijriDay;
+
+
+loadPrayerTimes();
 
 </script>
 
